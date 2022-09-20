@@ -1,0 +1,19 @@
+.landing{
+    margin-top: 0;
+    width: auto;
+    height:720px;
+    background-image: url("../img/WallPaper.jpg");
+    background-size:cover;
+    display:flex;
+    align-items: center;
+    justify-content:end;
+}
+
+.food{
+margin: 20px;
+}
+
+.home{
+    margin: 100px;
+    display: inline;
+}

@@ -1,0 +1,21 @@
+.container{
+
+    background-size: contain;
+    background-position: 50%;
+    display: flex;
+    justify-content: center;
+    width: auto;
+    height: 555px;
+}
+
+.cont{
+    background-color: rgba(64, 64, 64, 0.322);
+    width: auto;
+    display: flex;
+    align-items: center;
+    justify-content:center;
+}
+
+.espacio{
+    margin: 20px;
+}

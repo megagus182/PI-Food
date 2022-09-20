@@ -1,0 +1,10 @@
+.create{
+    margin-top: 0;
+    width: auto;
+    height:720px;
+    background-image: url("../../img/Create.jpg");
+    background-size:cover;
+    display:flex;
+    align-items: center;
+    justify-content:start;
+}
