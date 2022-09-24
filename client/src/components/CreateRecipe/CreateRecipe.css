@@ -1,10 +1,50 @@
 .create{
     margin-top: 0;
     width: auto;
-    height:720px;
+    height:630px;
     background-image: url("../../img/Create.jpg");
     background-size:cover;
     display:flex;
     align-items: center;
     justify-content:start;
+}
+
+h1{
+margin-top: 0px;
+}
+
+span{
+    margin: 10px;
+}
+
+label{
+    color: white;
+}
+
+input{
+    border-radius: 5px;
+}
+
+.contain{
+    margin-left: 80px;
+    padding-top: 30px;
+    width: 450px;
+    height: 500px;
+    border-color: black;
+}
+
+.cuadro{
+    border-radius: 20px;
+    padding: 15px;
+    background-image: url("../../img/tabla.png");
+    background-size: cover;
+}
+
+.sombra{
+    background-color: rgba(0, 0, 0, 0.046);
+}
+
+.instructions{
+    display: -webkit-inline-box;
+    width: 450px;
 }

@@ -1,34 +1,65 @@
 import React from "react";
 import { getRecipesDetail } from "../../actions";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import recipeDefault from "../../img/recipeDefault.png"
-
+import recipeDefault from "../../img/recipeDefault.png";
+import "./Detail.css";
+import { NavLink } from "react-router-dom";
+import icon from "../../img/icon.png";
+import Loading from "../Loading";
 
 export default function Detail() {
-    const recipeDetail = useSelector((state) => state.recipeDetail);
-    const dispacth = useDispatch();
-    let { id } = useParams();
+  const recipeDetail = useSelector((state) => state.recipeDetail);
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(true);
+  let { id } = useParams();
 
   useEffect(() => {
-    console.log(id)
-    dispacth(getRecipesDetail(id));
+    console.log(id);
+    dispatch(getRecipesDetail(id)).then(recipeDetail =>{
+      setLoading(false)
+    })
   }, []);
 
-  if(!recipeDetail.image){
-    recipeDetail.image=recipeDefault
+  if (!recipeDetail.image) {
+    recipeDetail.image = recipeDefault;
   }
 
   return (
-    <div>
-      <h3>Detail Recipe id: {recipeDetail.id}</h3>
-      <h3>{recipeDetail.title}</h3>
-      <img src={recipeDetail.image} width="500" height="370" alt="not found"/>
-      <h5>HealthScore: {recipeDetail.healthScore}</h5>
-      <h5>DishTypes: {recipeDetail.dishTypes} </h5>
-      <h5>Summary: {recipeDetail.summary}</h5>
-      <h5>Instructions: {recipeDetail.instructions}</h5>
+    <div className="detail">
+      <div className="data">
+        <div className="nav">
+          <NavLink to={"/home"} className="navhome">
+            <img src={icon} className="icon" alt="dfg" />
+            <span className="span">Home</span>
+          </NavLink>
+        </div>
+        <h3>DETAIL RECIPE</h3>
+        <h4>{recipeDetail.title}</h4>
+        <div className="imgDetail">
+          <img
+          className="i"
+            src={recipeDetail.image}
+            width="300"
+            height="230"
+            alt="not found"
+          />
+          <div className="health">
+            <span>HEALTHSCORE: </span><br></br>
+            <span>{recipeDetail.healthScore}</span>
+            <br></br>
+            <br></br>
+            <span>DISHTYPES: </span><br></br>
+            <span>{recipeDetail.dishTypes}</span>
+          </div>
+        </div>
+        <span>SUMMARY:</span>
+        <span>{recipeDetail.summary}</span>
+        <span>INSTRUCTIONS: </span>
+        <span> {recipeDetail.instructions}</span>
+      </div>
+      {loading && <Loading />}
     </div>
   );
 }

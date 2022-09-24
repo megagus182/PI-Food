@@ -84,7 +84,7 @@ router.get("/recipes", async (req, res) => {
 // Obtener el detalle de una receta en particular
 // Debe traer solo los datos pedidos en la ruta de detalle de receta
 // Incluir los tipos de dieta asociados
-router.get("/recipes/:idRecipe", async (req, res) => { //<///////ARREGLAR ERROR AQUI AL TRAER LAS CREADAS
+router.get("/recipes/:idRecipe", async (req, res) => { 
     const { idRecipe } = req.params;
     if (idRecipe.length > 9) {
         console.log("Entre al IF")
@@ -103,12 +103,12 @@ router.get("/recipes/:idRecipe", async (req, res) => { //<///////ARREGLAR ERROR 
             const obj = {
                 id: response.id,
                 title: response.title,
-                summary: response.summary,
+                summary: response.summary.replaceAll(/<(“[^”]”|'[^’]’|[^'”>])*>/g, ""),
                 healthScore: response.healthScore,
                 image: response.image,
                 dishTypes: response.dishTypes,
                 diets: response.diets.map(d => { return { name: d } }),
-                instructions: response.instructions
+                instructions: response.instructions.replaceAll(/<(“[^”]”|'[^’]’|[^'”>])*>/g, "")
             }
             res.status(200).json(obj)
         }

@@ -1,13 +1,14 @@
 import React from "react";
 import recipeDefault from "../../img/recipeDefault.png"
+import "./Card.css"
 
 export default function Card({title, diets, image}) {
 
-if(diets.length){
-  var filtro= <h5>Diet: {diets[0].name}</h5>
+if(diets && diets.length){
+  var filtro= <h6>{diets[0].name.toUpperCase()}</h6>
 }
 else{
-  filtro = <h5>Without Diet</h5>
+  filtro = <h6>WITHOUT DIET</h6>
 }
 
 if(!image){
@@ -16,13 +17,13 @@ if(!image){
   return (
     <div className="contenedor">
       <div>
-        <h2>{title}</h2>
+        <img src={image} width="150" height="100" alt="recipe" />
       </div>
       <div>
+        <h4>{title}</h4>
         {filtro}
       </div>
       <div>
-        <img src={image} width="312" height="231" alt="recipe" />
       </div>
     </div>
   );

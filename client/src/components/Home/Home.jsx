@@ -1,27 +1,32 @@
-import React from "react";
+import React, { useState } from "react";
 import Cards from "../Cards/Cards";
 import { getRecipe } from "../../actions";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import "./Home.css";
+import Loading from "../Loading";
 
 export default function Home() {
+  const [loading, setLoading] = useState(true);
   const recipes = useSelector((state) => state.recipes);
 
-  const dispacth = useDispatch();
+  const dispatch = useDispatch();
   useEffect(() => {
-    dispacth(getRecipe());
+    dispatch(getRecipe()).then(recipes =>{
+      setLoading(false)
+    })
   }, []);
 
   useEffect(() => {}, [recipes]);
-
   return (
     <div className="container">
       <Cards recipes={recipes} />
+      {loading && <Loading />}
     </div>
   );
 }
 
-// [ ] Input de búsqueda para encontrar recetas por nombre
+// [x] Input de búsqueda para encontrar recetas por nombre
 // [x] Área donde se verá el listado de recetas. Deberá mostrar su:
 // Imagen
 // Nombre
@@ -29,5 +34,5 @@ export default function Home() {
 // [ ] Botones/Opciones para filtrar por por tipo de dieta
 // [ ] Botones/Opciones para ordenar tanto ascendentemente como descendentemente
 // las recetas por orden alfabético y por health score (nivel de comida saludable).
-// [ ] Paginado para ir buscando y mostrando las siguientes recetas, 9 recetas por pagina, 
+// [ ] Paginado para ir buscando y mostrando las siguientes recetas, 9 recetas por pagina,
 // mostrando las primeros 9 en la primer pagina.

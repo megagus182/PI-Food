@@ -1,21 +1,48 @@
-.container{
-
-    background-size: contain;
-    background-position: 50%;
-    display: flex;
-    justify-content: center;
-    width: auto;
-    height: 555px;
+.containerCards {
+  background-size: contain;
+  background-position: 50%;
+  display: flex;
+  justify-content: center;
+  width: auto;
+  height: 270px;
 }
 
-.cont{
-    background-color: rgba(64, 64, 64, 0.322);
-    width: auto;
-    display: flex;
-    align-items: center;
-    justify-content:center;
+.botones{
+    margin: 5px;
+}
+.co {
+  background-color: rgba(64, 64, 64, 0.197);
+  width: auto;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
-.espacio{
-    margin: 20px;
+h4 {
+  margin: 5px;
+}
+h5 {
+  margin: 5px;
+}
+
+img {
+  border-radius: 20px;
+}
+
+.cont {
+  display: contents;
+}
+.espacio {
+  margin: 20px;
+}
+
+.layout {
+  width: 1000px;
+  height: 500px;
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
 }
