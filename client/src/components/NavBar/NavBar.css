@@ -29,14 +29,17 @@ ul {
     justify-content: space-between;
 }
 
+
 .navhome {
   display: flex;
   align-self: flex-start;
+  font-size: medium;
 }
 
 .navcreate {
   display: flex;
   align-self: flex-end;
+  font-size: medium;
 }
 
 .icon {

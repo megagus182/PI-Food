@@ -1,4 +1,4 @@
-import { GET_RECIPES, GET_RECIPES_DETAIL, ADD_FAVORITE, REMOVE_FAVORITE } from "../actions/index"
+import { GET_RECIPES, GET_RECIPES_DETAIL, GET_BY_DIET, REMOVE_FAVORITE } from "../actions/index"
 
 const initialState = {
     recipes: [],
@@ -18,10 +18,14 @@ export default function rootReducer(state = initialState, action) {
                 ...state,
                 recipeDetail: action.payload
             }
-        case ADD_FAVORITE:
+        case GET_BY_DIET:
+            const filtro = state.recipes.filter(d => {
+                console.log(filtro)
+                return d.diets.length>1
+            })
             return {
                 ...state,
-                favorites: [...state.favorites, action.payload]
+                recipes: filtro
             }
         case REMOVE_FAVORITE:
             return {

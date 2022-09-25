@@ -2,3 +2,17 @@
     display: flex;
     align-items: center;
 }
+
+li{
+    text-align: justify;
+    color: white;
+    font-size: x-small;
+}
+
+h5{
+    color: white;
+}
+
+h4{
+    color: antiquewhite;
+}

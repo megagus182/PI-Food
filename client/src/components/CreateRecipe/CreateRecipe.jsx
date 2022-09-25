@@ -91,7 +91,7 @@ export default function CreateRecipe() {
             ></input>
               <h4>
             {errorForm.title ? (
-                <small>{errorForm.title}</small>
+                <small className="red">{errorForm.title}</small>
                 ) : (
                   false
                   )}
@@ -100,13 +100,14 @@ export default function CreateRecipe() {
             <label>SUMMARY </label>
             <input
               name="summary"
+              className="inpSum"
               placeholder="Summary of your recipe"
               value={recipe.summary.replace(/<[^>]*>?/g, "")}
               onChange={handleChange}
             ></input>
               <h4>
             {errorForm.summary ? (
-                <small>{errorForm.summary}</small>
+                <small className="red">{errorForm.summary}</small>
                 ) : (
                   false
                   )}
@@ -115,6 +116,7 @@ export default function CreateRecipe() {
             <label>INSTRUCCIONS </label>
             <textarea
             type={"text"}
+            className="inpIns"
               name="instructions"
               placeholder="1.-  2.-  3.-"
               value={recipe.instructions.replace(/<[^>]*>?/g, "")}
@@ -122,7 +124,7 @@ export default function CreateRecipe() {
             ></textarea>
               <h4>
             {errorForm.instructions ? (
-                <small>{errorForm.instructions}</small>
+                <small className="red">{errorForm.instructions}</small>
                 ) : (
                   false
                   )}
@@ -135,7 +137,7 @@ export default function CreateRecipe() {
             ></input><label>{recipe.healthScore}</label>
               <h4>
             {errorForm.healthScore ? (
-                <small>{errorForm.healthScore}</small>
+                <small className="red">{errorForm.healthScore}</small>
                 ) : (
                   false
                   )}
@@ -158,7 +160,7 @@ export default function CreateRecipe() {
             <span>{recipe.diets.slice(0,",")}</span>
             <div>
               <h5> </h5>
-            <button type="submit" disabled={errorButton}>
+            <button className="createBut" type="submit" disabled={errorButton}>
               Create Recipe
             </button>
             </div>

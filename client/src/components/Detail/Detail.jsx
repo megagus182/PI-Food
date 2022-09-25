@@ -16,7 +16,6 @@ export default function Detail() {
   let { id } = useParams();
 
   useEffect(() => {
-    console.log(id);
     dispatch(getRecipesDetail(id)).then(recipeDetail =>{
       setLoading(false)
     })
@@ -24,6 +23,12 @@ export default function Detail() {
 
   if (!recipeDetail.image) {
     recipeDetail.image = recipeDefault;
+  }
+
+  const dish = recipeDetail.dishTypes
+
+  if(recipeDetail.dishTypes){
+    var dishmap = dish.map(d => <li className="list" key={id}>{d.toUpperCase()}</li>)
   }
 
   return (
@@ -51,7 +56,7 @@ export default function Detail() {
             <br></br>
             <br></br>
             <span>DISHTYPES: </span><br></br>
-            <span>{recipeDetail.dishTypes}</span>
+            <span>{dishmap}</span>
           </div>
         </div>
         <span>SUMMARY:</span>

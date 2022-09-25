@@ -1,5 +1,6 @@
 export const GET_RECIPES = "Traer las recetas de la API del backend";
 export const GET_RECIPES_DETAIL = "Traer el detalle de una receta de la API del backend"
+export const GET_BY_DIET = "Traer recetas por tipo de dieta"
 /////////////
 export const ADD_FAVORITE = "Agregar una receta a favoritos"
 export const REMOVE_FAVORITE = "Borrar una receta de favoritos"
@@ -41,10 +42,10 @@ export function getRecipesDetail(id) {
     }
 }
 
-export function addFavorite(recipe) {
+export function getByDiet(diet) {
     return {
-        type: ADD_FAVORITE,
-        payload: recipe,
+        type: GET_BY_DIET,
+        payload: diet,
     }
 }
 

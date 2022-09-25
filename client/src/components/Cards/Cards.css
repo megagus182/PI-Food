@@ -7,8 +7,22 @@
   height: 270px;
 }
 
-.botones{
-    margin: 5px;
+.botones {
+  margin: 1px;
+  transition: background-color 0.3s;
+  padding: 0px 16px;
+  color: white;
+  text-decoration: none;
+}
+button:hover:not(.active) {
+  background-color: rgb(80, 200, 110);
+}
+
+button {
+  border-radius: 3px;
+  background-color: rgba(255, 255, 255, 0.767);
+  width: 30px;
+  height: 30px;
 }
 .co {
   background-color: rgba(64, 64, 64, 0.197);
@@ -45,4 +59,10 @@ img {
   grid-template-rows: repeat(3, 1fr);
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
+}
+
+a:hover {
+  background-color: brown;
+  border-radius: 30px;
+  font-size: 115%;
 }

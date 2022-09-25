@@ -26,7 +26,7 @@ const getApiRecipesAll = async () => {
     return (response.data.results)
 }
 const getApiRecipes = async (name) => { //funcion para traer recetas POR NOMBRE de la API
-    const response = await axios.get(`https://api.spoonacular.com/recipes/complexSearch?query=${name}&apiKey=${API_KEY}`)
+    const response = await axios.get(`https://api.spoonacular.com/recipes/complexSearch?query=${name}&addRecipeInformation=true&apiKey=${API_KEY}`)
     return (response.data.results);
 }
 const getApiRecipesDetail = async (id) => { //funcion para traer detalle de una receta de la API
@@ -57,6 +57,15 @@ router.get("/recipes", async (req, res) => {
         }
         return obj
     })
+    const responseFormat = response.map((receta) => { //le damos formato para q solo muestre los 3 datos en la pag principal
+        const obj = {
+            id: receta.id,
+            title: receta.title,
+            image: receta.image,
+            diets: receta.diets.map(d => { return { name: d } }),
+        }
+        return obj
+    })
     const dbRecipe = await Recipe.findAll({ //buscar en la bd si hay alguna receta de las que se crean
         where: {
             title: {
@@ -65,7 +74,7 @@ router.get("/recipes", async (req, res) => {
         },
         include: [{ model: Diet }]
     });
-    const total = response.concat(dbRecipe)  //unir lo de la api con lo de la db
+    const total = responseFormat.concat(dbRecipe)  //unir lo de la api con lo de la db
     try {
         if (!name) {
             res.status(200).json(allRecipesFormat.concat(objBd))
