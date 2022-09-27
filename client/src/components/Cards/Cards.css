@@ -6,28 +6,38 @@
   width: auto;
   height: 270px;
 }
+li{
+  list-style:none
+}
+
+img{
+  margin-right: 9px;
+}
 
 .botones {
-  margin: 1px;
+  margin: 0px;
   transition: background-color 0.3s;
-  padding: 0px 16px;
+  padding: 10px 16px;
   color: white;
   text-decoration: none;
+  border-radius: 10px;
+  margin-left: 20px;
 }
 button:hover:not(.active) {
   background-color: rgb(80, 200, 110);
 }
 
 button {
-  border-radius: 3px;
+  border-radius: 10px;
   background-color: rgba(255, 255, 255, 0.767);
   width: 30px;
   height: 30px;
+  border-width: 0px;
 }
 .co {
   background-color: rgba(64, 64, 64, 0.197);
-  width: auto;
-  height: auto;
+  width: 1020px;
+  height: 534px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -63,6 +73,7 @@ img {
 
 a:hover {
   background-color: brown;
+  color: white;
   border-radius: 30px;
   font-size: 115%;
 }

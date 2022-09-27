@@ -6,7 +6,6 @@
   background-size: cover;
   display: flex;
   align-items: center;
-  justify-content: start;
 }
 
 h1 {
@@ -29,12 +28,19 @@ label {
 }
 
 input {
-  border-radius: 5px;
+  margin: 3px;
+  transition: background-color 0.3s;
+  padding: 0px 16px;
+  text-decoration: none;
+  border-radius: 20px;
+  border-color: black;
+  border-width: 0px;
+  background-color: rgba(255, 255, 255, 0.767);
 }
 
 .contain {
   margin-left: 80px;
-  padding-top: 30px;
+  padding-top: 0px;
   width: 450px;
   height: 500px;
   border-color: black;
@@ -43,28 +49,57 @@ input {
 .cuadro {
   border-radius: 50px;
   padding: 15px;
-  background-image: url("../../img/tabla.png");
-  background-size: cover;
+  background-image: url("../../img/tabla2.png");
+  background-size: 250%;
   background-position: center;
 }
 
+.justificado {
+  padding: 10px;
+  align-items: flex-start;
+  display: inline-flex;
+  flex-direction: column;
+}
+
 .sombra {
-  background-color: rgba(0, 0, 0, 0.046);
+  background-color: rgba(209, 116, 50, 0.238);
+  border-radius: 50px;
+  width: 420px;
 }
 
 .instructions {
   display: -webkit-inline-box;
   width: 450px;
+  
 }
 
-.createBut{
-    width: auto;
+.createBut {
+  width: auto;
 }
 
-.inpIns{
-    height: 100px;
+.titleInp {
+  text-transform: uppercase;
+  width: 250px;
 }
 
-.inpSum{
-    height: 60px;
+.inpIns {
+  margin: 3px;
+  transition: background-color 0.3s;
+  padding: 0px 16px;
+  text-decoration: none;
+  border-radius: 20px;
+  border-color: black;
+  border-width: 0px;
+  height: 70px;
+  background-color: rgba(255, 255, 255, 0.767);
+  width: 250px;
+}
+
+.inpSum {
+  height: 60px;
+  width: 250px;
+}
+
+.range{
+  padding: 0;
 }

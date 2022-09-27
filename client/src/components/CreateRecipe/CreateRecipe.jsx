@@ -2,10 +2,9 @@ import React from "react";
 import { useState } from "react";
 import "./CreateRecipe.css";
 import axios from "axios";
-import { NavLink, Redirect } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import icon from "../../img/icon.png";
-import Home from "../Home/Home";
-import { useHistory } from 'react-router-dom';
+import { useHistory } from "react-router-dom";
 
 export default function CreateRecipe() {
   const history = useHistory();
@@ -24,15 +23,15 @@ export default function CreateRecipe() {
     Object.keys(errorForm).length === 0 ? false : true
   );
   //Handle para cada cambio del formulario
-    function handleChange(e) {
-      setRecipe({
-        ...recipe,
-        [e.target.name]: e.target.value,
-      });
-      setErrorForm(validate(recipe));
-      console.log(recipe);
-    }
-//Hanlde para agregar dietas sin que se repitan
+  function handleChange(e) {
+    setRecipe({
+      ...recipe,
+      [e.target.name]: e.target.value,
+    });
+    setErrorForm(validate(recipe));
+    console.log(recipe);
+  }
+  //Hanlde para agregar dietas sin que se repitan
   function handleDiets(e) {
     setRecipe({
       ...recipe,
@@ -43,7 +42,7 @@ export default function CreateRecipe() {
   async function handleSubmit(e) {
     e.preventDefault();
     setErrorForm(validate(recipe));
-    await axios.post("http://localhost:3001/recipes", recipe)
+    await axios.post("http://localhost:3001/recipes", recipe);
     setRecipe({
       title: "",
       summary: "",
@@ -51,8 +50,8 @@ export default function CreateRecipe() {
       instructions: "",
       diets: [],
     });
-    alert("Recipe create succesfully")
-    history.push('/Home')
+    alert("Recipe create succesfully");
+    history.push("/Home");
   }
 
   function validate(info) {
@@ -70,101 +69,133 @@ export default function CreateRecipe() {
     return error;
   }
 
+  let aux = [];
+  for (let i = 0; i < recipe.diets.length; i++) {
+    if (recipe.diets[i] === "1") aux.push("Gluten Free /");
+    if (recipe.diets[i] === "2") aux.push("Low FODMAP /");
+    if (recipe.diets[i] === "3") aux.push("Ketogenic /");
+    if (recipe.diets[i] === "4") aux.push("Dairy free /");
+    if (recipe.diets[i] === "5") aux.push("Lacto-Vegetarian /");
+    if (recipe.diets[i] === "6") aux.push("Vegan /");
+    if (recipe.diets[i] === "7") aux.push("Pescetarian /");
+    if (recipe.diets[i] === "8") aux.push("Paleo /");
+    if (recipe.diets[i] === "9") aux.push("Primal /");
+    if (recipe.diets[i] === "10") aux.push("Whole30 /");
+  }
   return (
     <div className="create">
       <NavLink to={"/home"} className="navhome">
-              <img src={icon} className="icon" alt="dfg" />
-              <span className="span">Home</span>
-            </NavLink>
+        <img src={icon} className="icon" alt="dfg" />
+        <span className="span">Home</span>
+      </NavLink>
       <div className="contain">
         <form onSubmit={handleSubmit}>
           <div className="cuadro">
-          <div className="sombra">
-            <h1>CREATE A RECIPE</h1>
-            {/* TITLE */}
-            <label>TITLE </label>
-            <input
-              name="title"
-              placeholder="e.g: Pizza Hawaiana"
-              value={recipe.title}
-              onChange={handleChange}
-            ></input>
-              <h4>
-            {errorForm.title ? (
-                <small className="red">{errorForm.title}</small>
-                ) : (
-                  false
+            <div className="sombra">
+              <h1>CREATE A RECIPE</h1>
+              {/* TITLE */}
+              <div className="justificado">
+                <label>TITLE </label>
+                <input
+                  className="titleInp"
+                  name="title"
+                  placeholder="e.g: Salsa de chiles habaneros"
+                  value={recipe.title}
+                  onChange={handleChange}
+                ></input>
+                <h4>
+                  {errorForm.title ? (
+                    <small className="red">{errorForm.title}</small>
+                  ) : (
+                    false
                   )}
-                  </h4>
-            {/* SUMMARY */}
-            <label>SUMMARY </label>
-            <input
-              name="summary"
-              className="inpSum"
-              placeholder="Summary of your recipe"
-              value={recipe.summary.replace(/<[^>]*>?/g, "")}
-              onChange={handleChange}
-            ></input>
-              <h4>
-            {errorForm.summary ? (
-                <small className="red">{errorForm.summary}</small>
-                ) : (
-                  false
+                </h4>
+                {/* SUMMARY */}
+                <label>SUMMARY </label>
+                <input
+                  name="summary"
+                  className="inpSum"
+                  placeholder="Summary of your recipe"
+                  value={recipe.summary.replace(/<[^>]*>?/g, "")}
+                  onChange={handleChange}
+                ></input>
+                <h4>
+                  {errorForm.summary ? (
+                    <small className="red">{errorForm.summary}</small>
+                  ) : (
+                    false
                   )}
-                  </h4>
-            {/* INSTRUCCIONS */}
-            <label>INSTRUCCIONS </label>
-            <textarea
-            type={"text"}
-            className="inpIns"
-              name="instructions"
-              placeholder="1.-  2.-  3.-"
-              value={recipe.instructions.replace(/<[^>]*>?/g, "")}
-              onChange={handleChange}
-            ></textarea>
-              <h4>
-            {errorForm.instructions ? (
-                <small className="red">{errorForm.instructions}</small>
-                ) : (
-                  false
+                </h4>
+                {/* INSTRUCCIONS */}
+                <label>INSTRUCCIONS </label>
+                <textarea
+                  type={"text"}
+                  className="inpIns"
+                  name="instructions"
+                  placeholder="1.-&#10;2.-&#10;3.-"
+                  value={recipe.instructions.replace(/<[^>]*>?/g, "")}
+                  onChange={handleChange}
+                ></textarea>
+                <h4>
+                  {errorForm.instructions ? (
+                    <small className="red">{errorForm.instructions}</small>
+                  ) : (
+                    false
                   )}
-                  </h4>
-            {/* HEALTSCORE */}
-            <label>HEALTSCORE  </label>
-            <input type="range" name="healthScore" min="0" max="100" step="5" value="50"
-              value={recipe.healthScore}
-              onChange={handleChange}
-            ></input><label>{recipe.healthScore}</label>
-              <h4>
-            {errorForm.healthScore ? (
-                <small className="red">{errorForm.healthScore}</small>
-                ) : (
-                  false
+                </h4>
+                {/* HEALTSCORE */}
+                <div> 
+                <label>HEALTSCORE </label>
+                <input
+                  type="range"
+                  className="range"
+                  name="healthScore"
+                  min="0"
+                  max="100"
+                  step="5"
+                  value={recipe.healthScore}
+                  onChange={handleChange}
+                  ></input><span>{recipe.healthScore}</span>
+                  </div>
+                <h4>
+                  {errorForm.healthScore ? (
+                    <small className="red">{errorForm.healthScore}</small>
+                  ) : (
+                    false
                   )}
-                  </h4>
-            {/* DIETS */}
-            <label>DIETS </label>
-            <select name="diets" value={recipe.diets} onChange={handleDiets}>
-              <option value={1}>1.-Gluten Free</option>
-              <option value={2}>2.-Low FODMAP</option>
-              <option value={3}>3.-Ketogenic</option>
-              <option value={4}>4.-Vegetarian</option>
-              <option value={5}>5.-Lacto-Vegetarian</option>
-              <option value={6}>6.-Ovo-Vegetarian</option>
-              <option value={7}>7.-Vegan</option>
-              <option value={8}>8.-Pescetarian</option>
-              <option value={9}>9.-Paleo</option>
-              <option value={10}>10.-Primal</option>
-              <option value={11}>11.-Whole30</option>
-            </select>
-            <span>{recipe.diets.slice(0,",")}</span>
-            <div>
-              <h5> </h5>
-            <button className="createBut" type="submit" disabled={errorButton}>
-              Create Recipe
-            </button>
+                </h4>
+                {/* DIETS */}
+                <label>DIETS </label>
+                <select
+                  name="diets"
+                  className="filter"
+                  value={recipe.diets}
+                  onChange={handleDiets}
+                >
+                  <option value={1}>1.-Gluten Free</option>
+                  <option value={2}>2.-Low FODMAP</option>
+                  <option value={3}>3.-Ketogenic</option>
+                  <option value={4}>4.-Dairy free</option>
+                  <option value={5}>5.-Lacto-Vegetarian</option>
+                  <option value={6}>6.-Vegan</option>
+                  <option value={7}>7.-Pescetarian</option>
+                  <option value={8}>8.-Paleo</option>
+                  <option value={9}>9.-Primal</option>
+                  <option value={10}>10.-Whole30</option>
+                </select>
+              </div>
+              <div>
+                <span>{aux}</span>
+                <h5> </h5>
+                <button
+                  className="createBut"
+                  type="submit"
+                  disabled={errorButton}
+                >
+                  Create Recipe
+                </button>
+              </div>
             </div>
-          </div>
           </div>
         </form>
       </div>

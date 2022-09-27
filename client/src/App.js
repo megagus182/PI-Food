@@ -7,7 +7,6 @@ import Detail from './components/Detail/Detail';
 import LandingPage from './components/LandingPage';
 import SearchBar from './components/SearchBar/SearchBar';
 import CreateRecipe from './components/CreateRecipe/CreateRecipe';
-import Filter from './components/Filter/Filter';
 
 function App() {
   return (
@@ -18,7 +17,6 @@ function App() {
         <Route path="/home"><NavBar/></Route>
         <Route path="/home"><SearchBar/></Route>
         <Route path="/home"><Home /></Route>
-        <Route path="/home"><Filter/></Route>
         <Route path="/createRecipe"><CreateRecipe /></Route>
         <Route path="/detail/:id"><Detail /></Route>
       </div>

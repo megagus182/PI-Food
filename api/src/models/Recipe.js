@@ -22,7 +22,7 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER
     },
     instructions: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING(1000)
     }
   },
     {

@@ -1,6 +1,6 @@
 .contenedor{
     display: flex;
-    align-items: center;
+    align-items: flex-start;
 }
 
 li{
@@ -10,9 +10,15 @@ li{
 }
 
 h5{
+    
     color: white;
 }
 
 h4{
     color: antiquewhite;
+}
+
+h6{
+    color: white;
+    display: flex
 }

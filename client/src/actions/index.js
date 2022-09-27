@@ -2,7 +2,7 @@ export const GET_RECIPES = "Traer las recetas de la API del backend";
 export const GET_RECIPES_DETAIL = "Traer el detalle de una receta de la API del backend"
 export const GET_BY_DIET = "Traer recetas por tipo de dieta"
 /////////////
-export const ADD_FAVORITE = "Agregar una receta a favoritos"
+export const SORT_RECIPE = "Acomodar de la A a la Z"
 export const REMOVE_FAVORITE = "Borrar una receta de favoritos"
 
 const URL_GET_RECIPES = "http://localhost:3001/recipes"           //Url al backedn para traer todas las recetas
@@ -49,9 +49,9 @@ export function getByDiet(diet) {
     }
 }
 
-export function removeFavorite(id) {
+export function sortRecipe(value) {
     return {
-        type: REMOVE_FAVORITE,
-        payload: id
+        type: SORT_RECIPE,
+        payload: value
     }
 }

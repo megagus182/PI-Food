@@ -5,7 +5,6 @@
     background-image: url("../../img/pizza.jpg");
     background-size:cover;
     display:flex;
-    justify-content:start;
 }
 
 .imgDetail{
