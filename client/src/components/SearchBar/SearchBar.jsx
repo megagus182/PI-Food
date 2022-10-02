@@ -2,10 +2,13 @@ import React from "react";
 import "./SearchBar.css";
 import { useDispatch } from "react-redux";
 import { useState } from "react";
-import { getRecipeSearch } from "../../actions";
+import { cleanFilter, getRecipeSearch } from "../../actions";
+import Loading from "../Loading";
 
 export default function SearchBar() {
   const dispatch = useDispatch();
+
+  const [loading, setLoading] = useState(false)
 
   const [search, setSearch] = useState({
     name: "",
@@ -19,8 +22,15 @@ export default function SearchBar() {
   }
 
   function handleSubmit(e) {
+    setLoading(true)
     e.preventDefault();
-    dispatch(getRecipeSearch(search.name));
+    dispatch(cleanFilter())
+    dispatch(getRecipeSearch(search.name)).then(recipe =>{
+      setLoading(false)});
+      setSearch({
+        ...search,
+        name: "",
+      });
   }
 
   return (
@@ -36,8 +46,9 @@ export default function SearchBar() {
             type="text"
           />
           <button className="search-button" type="submit">
-            <span>Search!</span>
+            <span>Search!</span> 
           </button>
+          <div className="searchLoading"> {loading && <Loading/>}</div>
         </form>
       </div>
     </div>

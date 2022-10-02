@@ -33,6 +33,7 @@ button {
   width: 30px;
   height: 30px;
   border-width: 0px;
+  margin-left: 5px;
 }
 .co {
   background-color: rgba(64, 64, 64, 0.197);

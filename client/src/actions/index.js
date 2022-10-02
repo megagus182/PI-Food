@@ -1,15 +1,15 @@
-export const GET_RECIPES = "Traer las recetas de la API del backend";
+export const GET_RECIPES = "Traer las recetas de la API del backend"
 export const GET_RECIPES_DETAIL = "Traer el detalle de una receta de la API del backend"
 export const GET_BY_DIET = "Traer recetas por tipo de dieta"
-/////////////
 export const SORT_RECIPE = "Acomodar de la A a la Z"
-export const REMOVE_FAVORITE = "Borrar una receta de favoritos"
-
+export const CLEAN_DETAIL = "limpiar detalle"
+export const CLEAN_FILTER = "limpiar filtros"
+/////////////
 const URL_GET_RECIPES = "http://localhost:3001/recipes"           //Url al backedn para traer todas las recetas
 const URL_GET_DETAILS = "http://localhost:3001/recipes/" //Url al back para traer el detalle de una receta por id
 const URL_GET_SEARCH = "http://localhost:3001/recipes?name=" //Url para buscar en el searchbar
 
-export function getRecipe() {
+export function getRecipe() { //HOME
     return function (dispatch) {        //uso la funcion dispatch
         return fetch(URL_GET_RECIPES)   //hago fetch a la url
             .then(res => res.json())    //la respuesta la convierto en json
@@ -20,18 +20,19 @@ export function getRecipe() {
     };
 }
 
-export function getRecipeSearch(name) {
-    return function (dispatch) {        //uso la funcion dispatch
-        return fetch(URL_GET_SEARCH + name)   //hago fetch a la url
-            .then(res => res.json())    //la respuesta la convierto en json
-            .then(respuestaJson => dispatch({  //uso la respuesta y la dispacho al reducer
-                type: GET_RECIPES,
-                payload: respuestaJson,
-            }))
+export function getRecipeSearch(name) { //SEARCHBAR
+    return function async (dispatch) { 
+            return fetch(URL_GET_SEARCH + name)   //hago fetch a la url
+                .then(res => res.json())    //la respuesta la convierto en json
+                .then(respuestaJson => dispatch({  //uso la respuesta y la dispacho al reducer
+                    type: GET_RECIPES,
+                    payload: respuestaJson
+                })) 
+             //uso la funcion dispatch
     };
 }
 
-export function getRecipesDetail(id) {
+export function getRecipesDetail(id) { //DETALLE DE RECETA
     return function (dispatch) {
         return fetch(URL_GET_DETAILS + id)
             .then(res => res.json())
@@ -42,16 +43,28 @@ export function getRecipesDetail(id) {
     }
 }
 
-export function getByDiet(diet) {
+export function getByDiet(diet) { //FILTRO POR DIETA
     return {
         type: GET_BY_DIET,
         payload: diet,
     }
 }
 
-export function sortRecipe(value) {
+export function sortRecipe(value) { //ORDENAMIENTO A-Z
     return {
         type: SORT_RECIPE,
         payload: value
+    }
+}
+
+export function cleanDetail(){
+    return{
+        type: CLEAN_DETAIL
+    }
+}
+
+export function cleanFilter(){
+    return{
+        type: CLEAN_FILTER
     }
 }

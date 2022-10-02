@@ -5,6 +5,7 @@ import axios from "axios";
 import { NavLink } from "react-router-dom";
 import icon from "../../img/icon.png";
 import { useHistory } from "react-router-dom";
+import { useEffect } from "react";
 
 export default function CreateRecipe() {
   const history = useHistory();
@@ -17,11 +18,14 @@ export default function CreateRecipe() {
     diets: [],
   });
   //Estado local de error de formulario
-  const [errorForm, setErrorForm] = useState({});
+  const [errorForm, setErrorForm] = useState({title: ""});
   //Estado local para el disable del botón
-  const [errorButton, setErrorButton] = useState(
-    Object.keys(errorForm).length === 0 ? false : true
-  );
+  const [errorButton, setErrorButton] = useState(true);
+
+useEffect(()=>{
+  Object.keys(errorForm).length === 0 ? setErrorButton(false) : setErrorButton(true)
+},[errorForm])
+
   //Handle para cada cambio del formulario
   function handleChange(e) {
     setRecipe({
@@ -41,6 +45,7 @@ export default function CreateRecipe() {
   //Hanlde para submitear
   async function handleSubmit(e) {
     e.preventDefault();
+    console.log(validate(recipe))
     setErrorForm(validate(recipe));
     await axios.post("http://localhost:3001/recipes", recipe);
     setRecipe({
@@ -54,6 +59,7 @@ export default function CreateRecipe() {
     history.push("/Home");
   }
 
+
   function validate(info) {
     let error = {};
     if (!info.title || info.title === "") error.title = "Title is required";
@@ -63,24 +69,30 @@ export default function CreateRecipe() {
     if (typeof info.summary !== "string")
       error.name = "The type of data need to be string";
     if (!info.healthScore) error.healthScore = "Put a HealthScore: 1 - 100";
-    if (typeof info.healthScore !== "number")
-      error.name = "The type of data need to be a number: 1-100";
     if (!info.instructions) error.instructions = "Instructions are required";
     return error;
   }
 
+  function deleteDiet(e){
+    e.preventDefault();
+    setRecipe({
+      ...recipe,
+      diets: recipe.diets.filter(d => d !== e.target.name)
+    })
+  }
+
   let aux = [];
   for (let i = 0; i < recipe.diets.length; i++) {
-    if (recipe.diets[i] === "1") aux.push("Gluten Free /");
-    if (recipe.diets[i] === "2") aux.push("Low FODMAP /");
-    if (recipe.diets[i] === "3") aux.push("Ketogenic /");
-    if (recipe.diets[i] === "4") aux.push("Dairy free /");
-    if (recipe.diets[i] === "5") aux.push("Lacto-Vegetarian /");
-    if (recipe.diets[i] === "6") aux.push("Vegan /");
-    if (recipe.diets[i] === "7") aux.push("Pescetarian /");
-    if (recipe.diets[i] === "8") aux.push("Paleo /");
-    if (recipe.diets[i] === "9") aux.push("Primal /");
-    if (recipe.diets[i] === "10") aux.push("Whole30 /");
+    if (recipe.diets[i] === "1") aux.push("| Gluten Free", <button name="1" className="dietButton" onClick={deleteDiet}>x</button>);
+    if (recipe.diets[i] === "2") aux.push("| Low FODMAP", <button name="2" className="dietButton" onClick={deleteDiet}>x</button>);
+    if (recipe.diets[i] === "3") aux.push("| Ketogenic", <button name="3" className="dietButton" onClick={deleteDiet}>x</button>);
+    if (recipe.diets[i] === "4") aux.push("| Dairy free", <button name="4" className="dietButton" onClick={deleteDiet}>x</button>);
+    if (recipe.diets[i] === "5") aux.push("| Lacto-Vegetarian", <button name="5" className="dietButton" onClick={deleteDiet}>x</button>);
+    if (recipe.diets[i] === "6") aux.push("| Vegan", <button name="6" className="dietButton" onClick={deleteDiet}>x</button>);
+    if (recipe.diets[i] === "7") aux.push("| Pescetarian", <button name="7" className="dietButton" onClick={deleteDiet}>x</button>);
+    if (recipe.diets[i] === "8") aux.push("| Paleo", <button name="8" className="dietButton" onClick={deleteDiet}>x</button>);
+    if (recipe.diets[i] === "9") aux.push("| Primal", <button name="9" className="dietButton" onClick={deleteDiet}>x</button>);
+    if (recipe.diets[i] === "10") aux.push("| Whole30", <button name="10" className="dietButton" onClick={deleteDiet}>x</button>);
   }
   return (
     <div className="create">
@@ -172,6 +184,7 @@ export default function CreateRecipe() {
                   value={recipe.diets}
                   onChange={handleDiets}
                 >
+                  <option value={0}></option>
                   <option value={1}>1.-Gluten Free</option>
                   <option value={2}>2.-Low FODMAP</option>
                   <option value={3}>3.-Ketogenic</option>

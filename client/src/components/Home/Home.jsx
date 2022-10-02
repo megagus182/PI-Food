@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Cards from "../Cards/Cards";
-import { getRecipe, getByDiet, sortRecipe } from "../../actions";
+import { getRecipe, getByDiet, sortRecipe, cleanFilter } from "../../actions";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "./Home.css";
@@ -47,11 +47,18 @@ export default function Home() {
     dispatch(sortRecipe(e.target.value))
   }
 
+  function traerRecetas(){
+    dispatch(cleanFilter())
+    dispatch(getRecipe())
+  }
+
 
   return (
     <div className="container">
+      <button className="traer" onClick={traerRecetas}>ALL RECIPES</button>
       <div className="filtro"> 
       <select name="diets" className="filter" value={recipe.diets} onChange={handleChange}>
+      <option value={0}></option>
         <option value={"gluten free"}>Gluten Free</option>
         <option value={"dairy free"}>Dairy Free</option>
         <option value={"ketogenic"}>Ketogenic</option>
@@ -82,7 +89,7 @@ export default function Home() {
 // Nombre
 // Tipo de dieta (vegetariano, vegano, apto celíaco, etc)
 // [x] Botones/Opciones para filtrar por por tipo de dieta
-// [ ] Botones/Opciones para ordenar tanto ascendentemente como descendentemente
+// [x] Botones/Opciones para ordenar tanto ascendentemente como descendentemente
 // las recetas por orden alfabético y por health score (nivel de comida saludable).
 // [x] Paginado para ir buscando y mostrando las siguientes recetas, 9 recetas por pagina,
 // mostrando las primeros 9 en la primer pagina.

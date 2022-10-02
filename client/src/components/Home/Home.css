@@ -9,6 +9,15 @@
   align-items: center;
   justify-content: center;
 }
+.traer{
+width: 100px;
+position: absolute;
+align-self: flex-start;
+justify-content: flex-start;
+margin-top: -537px;
+margin-left: 250px;
+height: auto;
+}
 
 .filtro {
   display: block;

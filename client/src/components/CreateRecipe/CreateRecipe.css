@@ -8,6 +8,15 @@
   align-items: center;
 }
 
+.dietButton{
+  height: 15px;
+  width: 17px;
+  border-radius: 2px;
+  justify-content: center;
+  align-items: center;
+  color: rgb(164, 0, 0);
+}
+
 h1 {
   margin-top: 0px;
 }

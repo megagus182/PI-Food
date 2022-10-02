@@ -33,12 +33,8 @@ const getApiRecipesDetail = async (id) => { //funcion para traer detalle de una 
     const response = await axios.get(`https://api.spoonacular.com/recipes/${id}/information?apiKey=${API_KEY}`)
     return (response.data);
 }
-const getApiDiets = async () => { //funcion para traer tipo de dietas de la API
-    const response = await axios.get(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${API_KEY}&addRecipeInformation=true&number=100`)
-    return (response.data.results);
-}
 
-// [ ] GET /recipes?name="...":
+// [x] GET /recipes?name="...":SearchBar
 // Obtener un listado de las recetas que contengan la palabra ingresada como query parameter
 // Si no existe ninguna receta mostrar un mensaje adecuado
 router.get("/recipes", async (req, res) => {
@@ -48,11 +44,13 @@ router.get("/recipes", async (req, res) => {
     const objBd = await Recipe.findAll({
         include: [{ model: Diet }]
     })
+    //FOMRATEO DE DATOS ////
     const allRecipesFormat = allRecipesApi.map((receta) => { //le damos formato para q solo muestre los 3 datos en la pag principal
         const obj = {
             id: receta.id,
             title: receta.title,
             image: receta.image,
+            healthScore : receta.healthScore,
             diets: receta.diets.map(d => { return { name: d } }),
         }
         return obj
@@ -62,10 +60,13 @@ router.get("/recipes", async (req, res) => {
             id: receta.id,
             title: receta.title,
             image: receta.image,
+            healthScore: receta.healthScore,
             diets: receta.diets.map(d => { return { name: d } }),
         }
         return obj
     })
+    //TERMINO DE FORMATEO
+    //Busqueda de name en la BD //
     const dbRecipe = await Recipe.findAll({ //buscar en la bd si hay alguna receta de las que se crean
         where: {
             title: {
@@ -74,28 +75,29 @@ router.get("/recipes", async (req, res) => {
         },
         include: [{ model: Diet }]
     });
-    const total = responseFormat.concat(dbRecipe)  //unir lo de la api con lo de la db
+    //UNION DE DATOS API-BD //
+    const total = responseFormat.concat(dbRecipe)  //Unir lo de la api con lo de la db SI HUBO {NAME} EN LA QUERY
     try {
         if (!name) {
             res.status(200).json(allRecipesFormat.concat(objBd))
         }
         else if (response.length === 0) {
-            res.status(400).send("no existe alguna receta para lo que buscas")
+            res.status(400).json({msg:"error"})
         }
         else {
             res.status(200).json(total)
         }
     } catch (error) {
-        res.status(400).send("no existe alguna receta para lo que buscas")
+        res.status(400).json({msg:"no existe alguna receta para lo que buscas"})
     }
 })
-// [ ] GET /recipes/{idReceta}:
+// [ ] GET /recipes/{idReceta}: DETALLE DE RECETA
 // Obtener el detalle de una receta en particular
 // Debe traer solo los datos pedidos en la ruta de detalle de receta
 // Incluir los tipos de dieta asociados
 router.get("/recipes/:idRecipe", async (req, res) => { 
     const { idRecipe } = req.params;
-    if (idRecipe.length > 9) {
+    if (idRecipe.length > 9) { //DIFERENCIAR SI ES DE LA BD O DE LA API
         console.log("Entre al IF")
         try {
             const objDb = await Recipe.findByPk(idRecipe, { include: [{ model: Diet }] })
@@ -127,12 +129,12 @@ router.get("/recipes/:idRecipe", async (req, res) => {
     }
 })
 
-// [ ] POST /recipes:
+// [ ] POST /recipes: CREAR RECETA
 // Recibe los datos recolectados desde el formulario controlado de la ruta de creación de recetas por body
 // Crea una receta en la base de datos relacionada con sus tipos de dietas.
 router.post("/recipes", async (req, res) => {
     const { title, summary, healthScore, instructions, diets } = req.body;
-    if (!title || !summary) res.status(404).send("faltan datos necesarios")
+    if (!title || !summary) return res.status(404).send("faltan datos necesarios")
 
     try {
         const nuevaReceta = await Recipe.create({
@@ -148,13 +150,16 @@ router.post("/recipes", async (req, res) => {
     }
 })
 
-// [ ] GET /diets:
+
+
+
+// [ ] GET /diets: PRECARGAR LA BD CON LAS DIETAS
 // Obtener todos los tipos de dieta posibles
 // En una primera instancia, cuando no exista ninguno, deberán precargar 
 //la base de datos con los tipos de datos indicados por spoonacular acá
 router.get("/diets", async (req, res) => {
     try {
-        const response = await getApiDiets(); //Traigo las diets de la Api
+        const response = await getApiRecipesAll(); //Traigo las diets de la Api
         const dietFilter = await response.map(e => {
             return {
                 id: e.id,

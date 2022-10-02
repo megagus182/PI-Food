@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Card from "./Card";
 import "./Cards.css";
@@ -7,7 +7,7 @@ export default function Cards({ recipes }) {
   const [currentPage, setCurrentPage] = useState(0);
 
   useEffect(() => {
-    setCurrentPage(0)
+    setCurrentPage(0);
   }, [recipes]);
 
   const nextPage = () => {
@@ -61,64 +61,34 @@ export default function Cards({ recipes }) {
         return null;
     }
   };
-  
+
   const filterRecipe = () => {
     return recipes.slice(currentPage, currentPage + 9);
   };
 
-
+  const botonado = () => {
+    let num = 1;
+    let botones = [];
+    console.log(recipes.length)
+    if(recipes.length){
+      for (let i = 0;i*9 <= recipes.length; i++) {
+        botones.push(
+          <button name={num} onClick={page}>
+          {num}
+        </button>
+        
+      );
+      num++;}
+    }
+      return  botones
+    }
+  
   return (
     <div className="co">
       <div className="botones">
         <button onClick={prevPage}> « </button>
         &nbsp;
-        <button name="1" onClick={page}>
-          1
-        </button>
-        &nbsp;
-        <button name="2" onClick={page}>
-          2
-        </button>
-        &nbsp;
-        <button name="3" onClick={page}>
-          3
-        </button>
-        &nbsp;
-        <button name="4" onClick={page}>
-          4
-        </button>
-        &nbsp;
-        <button name="5" onClick={page}>
-          5
-        </button>
-        &nbsp;
-        <button name="6" onClick={page}>
-          6
-        </button>
-        &nbsp;
-        <button name="7" onClick={page}>
-          7
-        </button>
-        &nbsp;
-        <button name="8" onClick={page}>
-          8
-        </button>
-        &nbsp;
-        <button name="9" onClick={page}>
-          9
-        </button>
-        &nbsp;
-        <button name="10" onClick={page}>
-          10
-        </button>
-        &nbsp;
-        <button name="11" onClick={page}>
-          11
-        </button>
-        &nbsp;
-        <button name="12" onClick={page}>
-          12
-        </button>
+        {botonado()}
         &nbsp;
         <button onClick={nextPage}>»</button>
       </div>

@@ -1,5 +1,5 @@
 import React from "react";
-import { getRecipesDetail } from "../../actions";
+import { getRecipesDetail, cleanDetail } from "../../actions";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -20,6 +20,12 @@ export default function Detail() {
       setLoading(false)
     })
   }, []);
+
+useEffect(()=>{
+  return ()=>{
+    dispatch(cleanDetail())
+  }
+},[])
 
   if (!recipeDetail.image) {
     recipeDetail.image = recipeDefault;
