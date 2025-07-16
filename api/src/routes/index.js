@@ -2,39 +2,28 @@ const express = require('express');
 const morgan = require("morgan");
 const axios = require("axios");
 const { Op } = require("sequelize");
-// Importar todos los routers;
-// Ejemplo: const authRouter = require('./auth.js');
 const { Diet, Recipe } = require('../db.js');
 const router = express();
-const { API_KEY } = process.env;
+const { SPOONACULAR_API_KEY } = process.env;
 
-// Configurar los routers
-// Ejemplo: router.use('/auth', authRouter);
 router.use(express.json());
 router.use(morgan("dev"));
 
-// IMPORTANTE: No está permitido utilizar los filtrados, ordenamientos y paginados brindados
-// por la API externa, todas estas funcionalidades tienen que implementarlas ustedes.
-
-//https://api.spoonacular.com/recipes/complexSearch?apiKey={API_KEY}
-//https://api.spoonacular.com/recipes/complexSearch?apiKey={API_KEY}&addRecipeInformation=true
-//https://api.spoonacular.com/recipes/{id}/information?apiKey={API_KEY}
-
 //FUNCIONES PARA TRAER DATOS DE LA API
 const getApiRecipesAll = async () => {
-    const response = await axios.get(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${API_KEY}&addRecipeInformation=true&number=100`)
+    const response = await axios.get(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${SPOONACULAR_API_KEY}&addRecipeInformation=true&number=100`)
     return (response.data.results)
 }
 const getApiRecipes = async (name) => { //funcion para traer recetas POR NOMBRE de la API
-    const response = await axios.get(`https://api.spoonacular.com/recipes/complexSearch?query=${name}&addRecipeInformation=true&apiKey=${API_KEY}`)
+    const response = await axios.get(`https://api.spoonacular.com/recipes/complexSearch?query=${name}&addRecipeInformation=true&apiKey=${SPOONACULAR_API_KEY}`)
     return (response.data.results);
 }
 const getApiRecipesDetail = async (id) => { //funcion para traer detalle de una receta de la API
-    const response = await axios.get(`https://api.spoonacular.com/recipes/${id}/information?apiKey=${API_KEY}`)
+    const response = await axios.get(`https://api.spoonacular.com/recipes/${id}/information?apiKey=${SPOONACULAR_API_KEY}`)
     return (response.data);
 }
 
-// [x] GET /recipes?name="...":SearchBar
+// GET /recipes?name="...":SearchBar
 // Obtener un listado de las recetas que contengan la palabra ingresada como query parameter
 // Si no existe ninguna receta mostrar un mensaje adecuado
 router.get("/recipes", async (req, res) => {
@@ -91,7 +80,7 @@ router.get("/recipes", async (req, res) => {
         res.status(400).json({msg:"no existe alguna receta para lo que buscas"})
     }
 })
-// [ ] GET /recipes/{idReceta}: DETALLE DE RECETA
+// GET /recipes/{idReceta}: DETALLE DE RECETA
 // Obtener el detalle de una receta en particular
 // Debe traer solo los datos pedidos en la ruta de detalle de receta
 // Incluir los tipos de dieta asociados
@@ -129,7 +118,7 @@ router.get("/recipes/:idRecipe", async (req, res) => {
     }
 })
 
-// [ ] POST /recipes: CREAR RECETA
+// POST /recipes: CREAR RECETA
 // Recibe los datos recolectados desde el formulario controlado de la ruta de creación de recetas por body
 // Crea una receta en la base de datos relacionada con sus tipos de dietas.
 router.post("/recipes", async (req, res) => {
@@ -153,7 +142,7 @@ router.post("/recipes", async (req, res) => {
 
 
 
-// [ ] GET /diets: PRECARGAR LA BD CON LAS DIETAS
+// GET /diets: PRECARGAR LA BD CON LAS DIETAS
 // Obtener todos los tipos de dieta posibles
 // En una primera instancia, cuando no exista ninguno, deberán precargar 
 //la base de datos con los tipos de datos indicados por spoonacular acá
@@ -184,5 +173,4 @@ router.get("/diets", async (req, res) => {
     await Diet.bulkCreate(dbPrecharge); //precargo la db con las dietas
 })
 
-//listen puerto 3001
 module.exports = router;

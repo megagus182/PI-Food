@@ -9,9 +9,9 @@ const modelRecipe = require('./Models/Recipe.js');
 const modelDiet = require('./Models/Diet');
 
 const sequelize = new Sequelize(DATABASE_URL, {
-  logging: false, // set to console.log to see the raw SQL queries
+  logging: false,
   native: false,
-  dialectOptions:{
+  dialectOptions: {
     ssl: {
       require: true,
       rejectUnauthorized: false
