@@ -21,14 +21,14 @@ export function getRecipe() { //HOME
 }
 
 export function getRecipeSearch(name) { //SEARCHBAR
-    return function async (dispatch) { 
-            return fetch(URL_GET_SEARCH + name)   //hago fetch a la url
-                .then(res => res.json())    //la respuesta la convierto en json
-                .then(respuestaJson => dispatch({  //uso la respuesta y la dispacho al reducer
-                    type: GET_RECIPES,
-                    payload: respuestaJson
-                })) 
-             //uso la funcion dispatch
+    return function async(dispatch) {
+        return fetch(URL_GET_SEARCH + name)   //hago fetch a la url
+            .then(res => res.json())    //la respuesta la convierto en json
+            .then(respuestaJson => dispatch({  //uso la respuesta y la dispacho al reducer
+                type: GET_RECIPES,
+                payload: respuestaJson
+            }))
+        //uso la funcion dispatch
     };
 }
 
@@ -57,14 +57,14 @@ export function sortRecipe(value) { //ORDENAMIENTO A-Z
     }
 }
 
-export function cleanDetail(){
-    return{
+export function cleanDetail() {
+    return {
         type: CLEAN_DETAIL
     }
 }
 
-export function cleanFilter(){
-    return{
+export function cleanFilter() {
+    return {
         type: CLEAN_FILTER
     }
 }
