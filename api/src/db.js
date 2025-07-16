@@ -5,8 +5,8 @@ const path = require('path');
 const {
   DATABASE_URL,
 } = process.env;
-const modelRecipe = require('./Models/Recipe.js');
-const modelDiet = require('./Models/Diet');
+const modelRecipe = require('./models/Recipe.js');
+const modelDiet = require('./models/Diet');
 
 const sequelize = new Sequelize(DATABASE_URL, {
   logging: false,
