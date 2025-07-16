@@ -47,7 +47,7 @@ useEffect(()=>{
     e.preventDefault();
     console.log(validate(recipe))
     setErrorForm(validate(recipe));
-    await axios.post("http://localhost:3001/recipes", recipe);
+    await axios.post("https://pi-food-j5lj.onrender.com/recipes", recipe);
     setRecipe({
       title: "",
       summary: "",

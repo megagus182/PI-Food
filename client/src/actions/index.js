@@ -5,9 +5,9 @@ export const SORT_RECIPE = "Acomodar de la A a la Z"
 export const CLEAN_DETAIL = "limpiar detalle"
 export const CLEAN_FILTER = "limpiar filtros"
 /////////////
-const URL_GET_RECIPES = "http://localhost:3001/recipes"           //Url al backedn para traer todas las recetas
-const URL_GET_DETAILS = "http://localhost:3001/recipes/" //Url al back para traer el detalle de una receta por id
-const URL_GET_SEARCH = "http://localhost:3001/recipes?name=" //Url para buscar en el searchbar
+const URL_GET_RECIPES = "https://pi-food-j5lj.onrender.com/recipes"           //Url al backedn para traer todas las recetas
+const URL_GET_DETAILS = "https://pi-food-j5lj.onrender.com/recipes/" //Url al back para traer el detalle de una receta por id
+const URL_GET_SEARCH = "https://pi-food-j5lj.onrender.com/recipes?name=" //Url para buscar en el searchbar
 
 export function getRecipe() { //HOME
     return function (dispatch) {        //uso la funcion dispatch
