@@ -6,13 +6,13 @@ export const CLEAN_DETAIL = "limpiar detalle"
 export const CLEAN_FILTER = "limpiar filtros"
 export const SET_ERROR = "SET_ERROR"; 
 /////////////
-//const URL_GET_RECIPES = "https://pi-food-j5lj.onrender.com/recipes"           //Url al backedn para traer todas las recetas
-//const URL_GET_DETAILS = "https://pi-food-j5lj.onrender.com/recipes/" //Url al back para traer el detalle de una receta por id
-//const URL_GET_SEARCH = "https://pi-food-j5lj.onrender.com/recipes?name=" //Url para buscar en el searchbar
+const URL_GET_RECIPES = "https://pi-food-j5lj.onrender.com/recipes"           //Url al backedn para traer todas las recetas
+const URL_GET_DETAILS = "https://pi-food-j5lj.onrender.com/recipes/" //Url al back para traer el detalle de una receta por id
+const URL_GET_SEARCH = "https://pi-food-j5lj.onrender.com/recipes?name=" //Url para buscar en el searchbar
 
-const URL_GET_RECIPES = "http://localhost:3001/recipes"           //Url al backedn para traer todas las recetas
-const URL_GET_DETAILS = "http://localhost:3001/recipes/" //Url al back para traer el detalle de una receta por id
-const URL_GET_SEARCH = "http://localhost:3001/recipes?name=" 
+//const URL_GET_RECIPES = "http://localhost:3001/recipes"           //Url al backedn para traer todas las recetas
+//const URL_GET_DETAILS = "http://localhost:3001/recipes/" //Url al back para traer el detalle de una receta por id
+//const URL_GET_SEARCH = "http://localhost:3001/recipes?name=" 
 export function getRecipe() {
     return function (dispatch) {
         return fetch(URL_GET_RECIPES)
