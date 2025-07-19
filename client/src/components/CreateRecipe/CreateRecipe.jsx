@@ -1,225 +1,204 @@
-import React from "react";
-import { useState } from "react";
-import "./CreateRecipe.css";
+import React, { useState, useEffect } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { NavLink } from "react-router-dom";
 import icon from "../../img/icon.png";
-import { useHistory } from "react-router-dom";
-import { useEffect } from "react";
 
 export default function CreateRecipe() {
-  const history = useHistory();
-  //Estado local de receta
+  const navigate = useNavigate();
+
   const [recipe, setRecipe] = useState({
     title: "",
     summary: "",
-    healthScore: "",
+    healthScore: 0,
     instructions: "",
     diets: [],
   });
-  //Estado local de error de formulario
-  const [errorForm, setErrorForm] = useState({title: ""});
-  //Estado local para el disable del botón
+
+  const [errorForm, setErrorForm] = useState({ title: "" });
   const [errorButton, setErrorButton] = useState(true);
 
-useEffect(()=>{
-  Object.keys(errorForm).length === 0 ? setErrorButton(false) : setErrorButton(true)
-},[errorForm])
+  useEffect(() => {
+    setErrorButton(Object.keys(errorForm).length > 0);
+  }, [errorForm]);
 
-  //Handle para cada cambio del formulario
   function handleChange(e) {
-    setRecipe({
-      ...recipe,
-      [e.target.name]: e.target.value,
-    });
-    setErrorForm(validate(recipe));
-    console.log(recipe);
+    setRecipe({ ...recipe, [e.target.name]: e.target.value });
+    setErrorForm(validate({ ...recipe, [e.target.name]: e.target.value }));
   }
-  //Hanlde para agregar dietas sin que se repitan
+
   function handleDiets(e) {
+    if (e.target.value === "0") return;
     setRecipe({
       ...recipe,
       diets: [...new Set([...recipe.diets, e.target.value])],
     });
   }
-  //Hanlde para submitear
+
   async function handleSubmit(e) {
     e.preventDefault();
-    console.log(validate(recipe))
     setErrorForm(validate(recipe));
     await axios.post("https://pi-food-j5lj.onrender.com/recipes", recipe);
-    setRecipe({
-      title: "",
-      summary: "",
-      healthScore: 0,
-      instructions: "",
-      diets: [],
-    });
-    alert("Recipe create succesfully");
-    history.push("/Home");
+    alert("Recipe created successfully");
+    navigate("/home");
   }
 
-
   function validate(info) {
-    let error = {};
-    if (!info.title || info.title === "") error.title = "Title is required";
-    if (typeof info.title !== "string")
-      error.title = "The type of data need to be string";
+    const error = {};
+    if (!info.title) error.title = "Title is required";
     if (!info.summary) error.summary = "Summary is required";
-    if (typeof info.summary !== "string")
-      error.name = "The type of data need to be string";
-    if (!info.healthScore) error.healthScore = "Put a HealthScore: 1 - 100";
+    if (!info.healthScore || info.healthScore < 1)
+      error.healthScore = "Put a HealthScore between 1 and 100";
     if (!info.instructions) error.instructions = "Instructions are required";
     return error;
   }
 
-  function deleteDiet(e){
+  function deleteDiet(e) {
     e.preventDefault();
     setRecipe({
       ...recipe,
-      diets: recipe.diets.filter(d => d !== e.target.name)
-    })
+      diets: recipe.diets.filter((d) => d !== e.target.name),
+    });
   }
 
-  let aux = [];
-  for (let i = 0; i < recipe.diets.length; i++) {
-    if (recipe.diets[i] === "1") aux.push("| Gluten Free", <button name="1" className="dietButton" onClick={deleteDiet}>x</button>);
-    if (recipe.diets[i] === "2") aux.push("| Low FODMAP", <button name="2" className="dietButton" onClick={deleteDiet}>x</button>);
-    if (recipe.diets[i] === "3") aux.push("| Ketogenic", <button name="3" className="dietButton" onClick={deleteDiet}>x</button>);
-    if (recipe.diets[i] === "4") aux.push("| Dairy free", <button name="4" className="dietButton" onClick={deleteDiet}>x</button>);
-    if (recipe.diets[i] === "5") aux.push("| Lacto-Vegetarian", <button name="5" className="dietButton" onClick={deleteDiet}>x</button>);
-    if (recipe.diets[i] === "6") aux.push("| Vegan", <button name="6" className="dietButton" onClick={deleteDiet}>x</button>);
-    if (recipe.diets[i] === "7") aux.push("| Pescetarian", <button name="7" className="dietButton" onClick={deleteDiet}>x</button>);
-    if (recipe.diets[i] === "8") aux.push("| Paleo", <button name="8" className="dietButton" onClick={deleteDiet}>x</button>);
-    if (recipe.diets[i] === "9") aux.push("| Primal", <button name="9" className="dietButton" onClick={deleteDiet}>x</button>);
-    if (recipe.diets[i] === "10") aux.push("| Whole30", <button name="10" className="dietButton" onClick={deleteDiet}>x</button>);
-  }
+  const dietsList = [
+    { id: "1", name: "Gluten Free" },
+    { id: "2", name: "Low FODMAP" },
+    { id: "3", name: "Ketogenic" },
+    { id: "4", name: "Dairy Free" },
+    { id: "5", name: "Lacto-Vegetarian" },
+    { id: "6", name: "Vegan" },
+    { id: "7", name: "Pescetarian" },
+    { id: "8", name: "Paleo" },
+    { id: "9", name: "Primal" },
+    { id: "10", name: "Whole30" },
+  ];
+
   return (
-    <div className="create">
-      <NavLink to={"/home"} className="navhome">
-        <img src={icon} className="icon" alt="dfg" />
-        <span className="span">Home</span>
-      </NavLink>
-      <div className="contain">
-        <form onSubmit={handleSubmit}>
-          <div className="cuadro">
-            <div className="sombra">
-              <h1>CREATE A RECIPE</h1>
-              {/* TITLE */}
-              <div className="justificado">
-                <label>TITLE </label>
-                <input
-                  className="titleInp"
-                  name="title"
-                  placeholder="e.g: Salsa de chiles habaneros"
-                  value={recipe.title}
-                  onChange={handleChange}
-                ></input>
-                <h4>
-                  {errorForm.title ? (
-                    <small className="red">{errorForm.title}</small>
-                  ) : (
-                    false
-                  )}
-                </h4>
-                {/* SUMMARY */}
-                <label>SUMMARY </label>
-                <input
-                  name="summary"
-                  className="inpSum"
-                  placeholder="Summary of your recipe"
-                  value={recipe.summary.replace(/<[^>]*>?/g, "")}
-                  onChange={handleChange}
-                ></input>
-                <h4>
-                  {errorForm.summary ? (
-                    <small className="red">{errorForm.summary}</small>
-                  ) : (
-                    false
-                  )}
-                </h4>
-                {/* INSTRUCCIONS */}
-                <label>INSTRUCCIONS </label>
-                <textarea
-                  type={"text"}
-                  className="inpIns"
-                  name="instructions"
-                  placeholder="1.-&#10;2.-&#10;3.-"
-                  value={recipe.instructions.replace(/<[^>]*>?/g, "")}
-                  onChange={handleChange}
-                ></textarea>
-                <h4>
-                  {errorForm.instructions ? (
-                    <small className="red">{errorForm.instructions}</small>
-                  ) : (
-                    false
-                  )}
-                </h4>
-                {/* HEALTSCORE */}
-                <div> 
-                <label>HEALTSCORE </label>
-                <input
-                  type="range"
-                  className="range"
-                  name="healthScore"
-                  min="0"
-                  max="100"
-                  step="5"
-                  value={recipe.healthScore}
-                  onChange={handleChange}
-                  ></input><span>{recipe.healthScore}</span>
+    <div className="min-h-screen bg-gradient-to-br from-lime-50 to-green-100 px-4 py-8">
+      <div className="max-w-3xl mx-auto bg-white shadow-xl rounded-xl p-8">
+        {/* NAV */}
+        <NavLink to="/home" className="inline-flex items-center mb-6 text-green-600 hover:text-green-800">
+          <img src={icon} className="w-6 h-6 mr-2" alt="icon" />
+          <span className="text-lg font-medium">Home</span>
+        </NavLink>
+
+        <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">Create a Recipe</h1>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* TITLE */}
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">Title</label>
+            <input
+              type="text"
+              name="title"
+              placeholder="e.g: Salsa de chiles habaneros"
+              value={recipe.title}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-lime-400"
+            />
+            {errorForm.title && <p className="text-red-500 text-sm mt-1">{errorForm.title}</p>}
+          </div>
+
+          {/* SUMMARY */}
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">Summary</label>
+            <input
+              type="text"
+              name="summary"
+              placeholder="Summary of your recipe"
+              value={recipe.summary}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-lime-400"
+            />
+            {errorForm.summary && <p className="text-red-500 text-sm mt-1">{errorForm.summary}</p>}
+          </div>
+
+          {/* INSTRUCTIONS */}
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">Instructions</label>
+            <textarea
+              name="instructions"
+              placeholder="1.- ...&#10;2.- ..."
+              rows="4"
+              value={recipe.instructions}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-lime-400"
+            />
+            {errorForm.instructions && <p className="text-red-500 text-sm mt-1">{errorForm.instructions}</p>}
+          </div>
+
+          {/* HEALTHSCORE */}
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">Health Score</label>
+            <div className="flex items-center gap-4">
+              <input
+                type="range"
+                name="healthScore"
+                min="0"
+                max="100"
+                step="5"
+                value={recipe.healthScore}
+                onChange={handleChange}
+                className="w-full"
+              />
+              <span className="text-gray-800 font-bold">{recipe.healthScore}</span>
+            </div>
+            {errorForm.healthScore && <p className="text-red-500 text-sm mt-1">{errorForm.healthScore}</p>}
+          </div>
+
+          {/* DIETS */}
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">Diets</label>
+            <select
+              name="diets"
+              onChange={handleDiets}
+              className="w-full border border-gray-300 rounded-lg p-3 mb-2 focus:outline-none focus:ring-2 focus:ring-lime-400"
+            >
+              <option value="0">-- Select a diet --</option>
+              {dietsList.map((d) => (
+                <option key={d.id} value={d.id}>
+                  {d.name}
+                </option>
+              ))}
+            </select>
+
+            {/* Tags de dietas seleccionadas */}
+            <div className="flex flex-wrap gap-2 mt-2">
+              {recipe.diets.map((id) => {
+                const name = dietsList.find((d) => d.id === id)?.name || id;
+                return (
+                  <div
+                    key={id}
+                    className="flex items-center bg-lime-100 text-lime-800 rounded-full px-3 py-1 text-sm"
+                  >
+                    {name}
+                    <button
+                      name={id}
+                      onClick={deleteDiet}
+                      className="ml-2 text-red-500 hover:text-red-700 font-bold"
+                    >
+                      ×
+                    </button>
                   </div>
-                <h4>
-                  {errorForm.healthScore ? (
-                    <small className="red">{errorForm.healthScore}</small>
-                  ) : (
-                    false
-                  )}
-                </h4>
-                {/* DIETS */}
-                <label>DIETS </label>
-                <select
-                  name="diets"
-                  className="filter"
-                  value={recipe.diets}
-                  onChange={handleDiets}
-                >
-                  <option value={0}></option>
-                  <option value={1}>1.-Gluten Free</option>
-                  <option value={2}>2.-Low FODMAP</option>
-                  <option value={3}>3.-Ketogenic</option>
-                  <option value={4}>4.-Dairy free</option>
-                  <option value={5}>5.-Lacto-Vegetarian</option>
-                  <option value={6}>6.-Vegan</option>
-                  <option value={7}>7.-Pescetarian</option>
-                  <option value={8}>8.-Paleo</option>
-                  <option value={9}>9.-Primal</option>
-                  <option value={10}>10.-Whole30</option>
-                </select>
-              </div>
-              <div>
-                <span>{aux}</span>
-                <h5> </h5>
-                <button
-                  className="createBut"
-                  type="submit"
-                  disabled={errorButton}
-                >
-                  Create Recipe
-                </button>
-              </div>
+                );
+              })}
             </div>
           </div>
+
+          {/* SUBMIT */}
+          <button
+            type="submit"
+            disabled={errorButton}
+            className={`w-full py-3 text-white rounded-lg font-semibold transition-colors duration-300 ${
+              errorButton
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-lime-500 hover:bg-lime-600 cursor-pointer"
+            }`}
+          >
+            Create Recipe
+          </button>
         </form>
       </div>
     </div>
   );
 }
-
-// [x] Un formulario controlado con JavaScript con los siguientes campos:
-// Nombre
-// Resumen del plato
-// Nivel de "comida saludable" (health score)
-// Paso a paso
-// [x] Posibilidad de seleccionar/agregar uno o más tipos de dietas
-// [x] Botón/Opción para crear una nueva receta

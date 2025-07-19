@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Card from "./Card";
-import "./Cards.css";
 
 export default function Cards({ recipes }) {
   const [currentPage, setCurrentPage] = useState(0);
@@ -15,94 +14,67 @@ export default function Cards({ recipes }) {
       setCurrentPage(currentPage + 9);
     }
   };
+
   const prevPage = () => {
     if (currentPage > 0) setCurrentPage(currentPage - 9);
   };
 
   const page = (e) => {
-    switch (e.target.name) {
-      case "1":
-        setCurrentPage(0);
-        break;
-      case "2":
-        setCurrentPage(9);
-        break;
-      case "3":
-        setCurrentPage(18);
-        break;
-      case "4":
-        setCurrentPage(27);
-        break;
-      case "5":
-        setCurrentPage(36);
-        break;
-      case "6":
-        setCurrentPage(45);
-        break;
-      case "7":
-        setCurrentPage(54);
-        break;
-      case "8":
-        setCurrentPage(63);
-        break;
-      case "9":
-        setCurrentPage(72);
-        break;
-      case "10":
-        setCurrentPage(81);
-        break;
-      case "11":
-        setCurrentPage(90);
-        break;
-      case "12":
-        setCurrentPage(99);
-        break;
-      default:
-        return null;
-    }
+    const number = parseInt(e.target.name);
+    setCurrentPage((number - 1) * 9);
   };
 
-  const filterRecipe = () => {
-    return recipes.slice(currentPage, currentPage + 9);
-  };
+  const filterRecipe = () => recipes.slice(currentPage, currentPage + 9);
 
   const botonado = () => {
-    let num = 1;
-    let botones = [];
-    console.log(recipes.length)
-    if(recipes.length){
-      for (let i = 0;i*9 <= recipes.length; i++) {
-        botones.push(
-          <button name={num} onClick={page}>
-          {num}
-        </button>
-        
-      );
-      num++;}
-    }
-      return  botones
-    }
-  
+    const totalPages = Math.ceil(recipes.length / 9);
+    return Array.from({ length: totalPages }, (_, i) => (
+      <button
+        key={i + 1}
+        name={i + 1}
+        onClick={page}
+        className={`$ {
+          (i + 1) === currentPage / 9 + 1
+            ? "bg-green-500 text-white"
+            : "bg-white text-gray-800"
+        } px-3 py-1 mx-1 rounded hover:bg-green-400 transition-all duration-200`}
+      >
+        {i + 1}
+      </button>
+    ));
+  };
+
   return (
-    <div className="co">
-      <div className="botones">
-        <button onClick={prevPage}> « </button>
-        &nbsp;
+    <div className="flex flex-col items-center justify-center w-full min-h-screen bg-[#fffaf5] px-4">
+      <div className="flex flex-wrap justify-center items-center gap-2 my-4">
+        <button
+          onClick={prevPage}
+          className="bg-white text-gray-800 px-3 py-1 rounded hover:bg-green-400 transition-all duration-200"
+        >
+          «
+        </button>
         {botonado()}
-        &nbsp;
-        <button onClick={nextPage}>»</button>
+        <button
+          onClick={nextPage}
+          className="bg-white text-gray-800 px-3 py-1 rounded hover:bg-green-400 transition-all duration-200"
+        >
+          »
+        </button>
       </div>
-      <section className="layout">
+
+      <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 w-full max-w-6xl">
         {filterRecipe()?.map((element) => (
-          <div key={element.id} className="cont">
-            <Link to={`/detail/${element.id}`}>
-              <Card
-                title={element.title}
-                diets={element.diets}
-                image={element.image}
-              />
-            </Link>
-          </div>
+          <Link
+            to={`/detail/${element.id}`}
+            key={element.id}
+            className="hover:scale-105 transition-transform duration-200"
+          >
+            <Card
+              title={element.title}
+              diets={element.diets}
+              image={element.image}
+            />
+          </Link>
         ))}
       </section>
     </div>

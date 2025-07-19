@@ -9,168 +9,186 @@ const { SPOONACULAR_API_KEY } = process.env;
 router.use(express.json());
 router.use(morgan("dev"));
 
-//FUNCIONES PARA TRAER DATOS DE LA API
+// ---------------- FUNCIONES API ----------------
+
 const getApiRecipesAll = async () => {
-    const response = await axios.get(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${SPOONACULAR_API_KEY}&addRecipeInformation=true&number=100`)
-    return (response.data.results)
-}
-const getApiRecipes = async (name) => { //funcion para traer recetas POR NOMBRE de la API
-    const response = await axios.get(`https://api.spoonacular.com/recipes/complexSearch?query=${name}&addRecipeInformation=true&apiKey=${SPOONACULAR_API_KEY}`)
-    return (response.data.results);
-}
-const getApiRecipesDetail = async (id) => { //funcion para traer detalle de una receta de la API
-    const response = await axios.get(`https://api.spoonacular.com/recipes/${id}/information?apiKey=${SPOONACULAR_API_KEY}`)
-    return (response.data);
-}
-
-// GET /recipes?name="...":SearchBar
-// Obtener un listado de las recetas que contengan la palabra ingresada como query parameter
-// Si no existe ninguna receta mostrar un mensaje adecuado
-router.get("/recipes", async (req, res) => {
-    const { name } = req.query; //se requiere el nombre a buscar por query
-    const response = await getApiRecipes(name); //Por si hace un query con el nombre
-    const allRecipesApi = await getApiRecipesAll(); //ocupo la funcion para traer las recetas de la api
-    const objBd = await Recipe.findAll({
-        include: [{ model: Diet }]
-    })
-    //FOMRATEO DE DATOS ////
-    const allRecipesFormat = allRecipesApi.map((receta) => { //le damos formato para q solo muestre los 3 datos en la pag principal
-        const obj = {
-            id: receta.id,
-            title: receta.title,
-            image: receta.image,
-            healthScore : receta.healthScore,
-            diets: receta.diets.map(d => { return { name: d } }),
-        }
-        return obj
-    })
-    const responseFormat = response.map((receta) => { //le damos formato para q solo muestre los 3 datos en la pag principal
-        const obj = {
-            id: receta.id,
-            title: receta.title,
-            image: receta.image,
-            healthScore: receta.healthScore,
-            diets: receta.diets.map(d => { return { name: d } }),
-        }
-        return obj
-    })
-    //TERMINO DE FORMATEO
-    //Busqueda de name en la BD //
-    const dbRecipe = await Recipe.findAll({ //buscar en la bd si hay alguna receta de las que se crean
-        where: {
-            title: {
-                [Op.iLike]: `%${name}%` //busca lo mas cercano a lo que se pasa por name
-            }
-        },
-        include: [{ model: Diet }]
+  try {
+    const response = await axios.get(`https://api.spoonacular.com/recipes/complexSearch`, {
+      params: {
+        apiKey: SPOONACULAR_API_KEY,
+        addRecipeInformation: true,
+        number: 100,
+      },
     });
-    //UNION DE DATOS API-BD //
-    const total = responseFormat.concat(dbRecipe)  //Unir lo de la api con lo de la db SI HUBO {NAME} EN LA QUERY
-    try {
-        if (!name) {
-            res.status(200).json(allRecipesFormat.concat(objBd))
-        }
-        else if (response.length === 0) {
-            res.status(400).json({msg:"error"})
-        }
-        else {
-            res.status(200).json(total)
-        }
-    } catch (error) {
-        res.status(400).json({msg:"no existe alguna receta para lo que buscas"})
-    }
-})
-// GET /recipes/{idReceta}: DETALLE DE RECETA
-// Obtener el detalle de una receta en particular
-// Debe traer solo los datos pedidos en la ruta de detalle de receta
-// Incluir los tipos de dieta asociados
-router.get("/recipes/:idRecipe", async (req, res) => { 
-    const { idRecipe } = req.params;
-    if (idRecipe.length > 9) { //DIFERENCIAR SI ES DE LA BD O DE LA API
-        console.log("Entre al IF")
-        try {
-            const objDb = await Recipe.findByPk(idRecipe, { include: [{ model: Diet }] })
-            res.status(200).json(objDb)
-        }
-        catch (error) {
-            res.send(error)
-        }
-    }
-    else {
-        console.log("Entre al ELSE")
-        try {
-            const response = await getApiRecipesDetail(idRecipe);
-            const obj = {
-                id: response.id,
-                title: response.title,
-                summary: response.summary.replaceAll(/<(“[^”]”|'[^’]’|[^'”>])*>/g, ""),
-                healthScore: response.healthScore,
-                image: response.image,
-                dishTypes: response.dishTypes,
-                diets: response.diets.map(d => { return { name: d } }),
-                instructions: response.instructions.replaceAll(/<(“[^”]”|'[^’]’|[^'”>])*>/g, "")
-            }
-            res.status(200).json(obj)
-        }
-        catch (error) {
-            res.send(error)
-        }
-    }
-})
+    return response.data.results;
+  } catch (error) {
+    console.error("Error en getApiRecipesAll:", error.message);
+    return []; // Devuelve un array vacío si falla
+  }
+};
 
-// POST /recipes: CREAR RECETA
-// Recibe los datos recolectados desde el formulario controlado de la ruta de creación de recetas por body
-// Crea una receta en la base de datos relacionada con sus tipos de dietas.
+const getApiRecipes = async (name) => {
+  try {
+    const response = await axios.get(`https://api.spoonacular.com/recipes/complexSearch`, {
+      params: {
+        query: name,
+        addRecipeInformation: true,
+        apiKey: SPOONACULAR_API_KEY,
+      },
+    });
+    return response.data.results;
+  } catch (error) {
+    console.error("Error en getApiRecipes:", error.message);
+    return []; // Devuelve un array vacío si falla
+  }
+};
+
+const getApiRecipesDetail = async (id) => {
+  try {
+    const response = await axios.get(`https://api.spoonacular.com/recipes/${id}/information`, {
+      params: {
+        apiKey: SPOONACULAR_API_KEY,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error en getApiRecipesDetail:", error.message);
+    throw error;
+  }
+};
+
+// ---------------- RUTAS ----------------
+
+// GET /recipes
+router.get("/recipes", async (req, res) => {
+  const { name } = req.query;
+
+  try {
+    let response = [];
+    if (name) {
+      response = await getApiRecipes(name);
+    }
+
+    const allRecipesApi = await getApiRecipesAll();
+    const objBd = await Recipe.findAll({ include: [{ model: Diet }] });
+
+    const allRecipesFormat = allRecipesApi.map((receta) => ({
+      id: receta.id,
+      title: receta.title,
+      image: receta.image,
+      healthScore: receta.healthScore,
+      diets: receta.diets.map((d) => ({ name: d })),
+    }));
+
+    const responseFormat = response.map((receta) => ({
+      id: receta.id,
+      title: receta.title,
+      image: receta.image,
+      healthScore: receta.healthScore,
+      diets: receta.diets.map((d) => ({ name: d })),
+    }));
+
+    const dbRecipe = await Recipe.findAll({
+      where: {
+        title: {
+          [Op.iLike]: `%${name}%`,
+        },
+      },
+      include: [{ model: Diet }],
+    });
+
+    const total = responseFormat.concat(dbRecipe);
+
+    if (!name) {
+      res.status(200).json(allRecipesFormat.concat(objBd));
+    } else if (response.length === 0 && dbRecipe.length === 0) {
+      res.status(404).json({ msg: "No se encontraron recetas con ese nombre." });
+    } else {
+      res.status(200).json(total);
+    }
+  } catch (error) {
+    console.error("Error en /recipes:", error.message);
+    res.status(500).json({ msg: "Ocurrió un error al obtener las recetas." });
+  }
+});
+
+// GET /recipes/:idRecipe
+router.get("/recipes/:idRecipe", async (req, res) => {
+  const { idRecipe } = req.params;
+
+  try {
+    if (idRecipe.length > 9) {
+      const objDb = await Recipe.findByPk(idRecipe, {
+        include: [{ model: Diet }],
+      });
+      if (!objDb) return res.status(404).json({ msg: "Receta no encontrada en la BD." });
+      return res.status(200).json(objDb);
+    } else {
+      const response = await getApiRecipesDetail(idRecipe);
+      const obj = {
+        id: response.id,
+        title: response.title,
+        summary: response.summary.replaceAll(/<(“[^”]”|'[^’]’|[^'”>])*>/g, ""),
+        healthScore: response.healthScore,
+        image: response.image,
+        dishTypes: response.dishTypes,
+        diets: response.diets.map((d) => ({ name: d })),
+        instructions: response.instructions?.replaceAll(/<(“[^”]”|'[^’]’|[^'”>])*>/g, "") || "No instructions provided.",
+      };
+      return res.status(200).json(obj);
+    }
+  } catch (error) {
+    console.error("Error en /recipes/:idRecipe:", error.message);
+    res.status(500).json({ msg: "Error al obtener el detalle de la receta." });
+  }
+});
+
+// POST /recipes
 router.post("/recipes", async (req, res) => {
-    const { title, summary, healthScore, instructions, diets } = req.body;
-    if (!title || !summary) return res.status(404).send("faltan datos necesarios")
+  const { title, summary, healthScore, instructions, diets } = req.body;
 
-    try {
-        const nuevaReceta = await Recipe.create({
-            title,
-            summary,
-            healthScore,
-            instructions
-        });
-        await nuevaReceta.setDiets(diets) //<----- Seteo la relación de recipe con diet
-        res.json(nuevaReceta);
-    } catch (error) {
-        res.status(404).send(error)
+  if (!title || !summary) return res.status(400).json({ msg: "Faltan datos obligatorios." });
+
+  try {
+    const nuevaReceta = await Recipe.create({
+      title,
+      summary,
+      healthScore,
+      instructions,
+    });
+
+    if (diets && diets.length > 0) {
+      await nuevaReceta.setDiets(diets);
     }
-})
 
+    res.status(201).json(nuevaReceta);
+  } catch (error) {
+    console.error("Error en POST /recipes:", error.message);
+    res.status(500).json({ msg: "Error al crear la receta." });
+  }
+});
 
-
-
-// GET /diets: PRECARGAR LA BD CON LAS DIETAS
-// Obtener todos los tipos de dieta posibles
-// En una primera instancia, cuando no exista ninguno, deberán precargar 
-//la base de datos con los tipos de datos indicados por spoonacular acá
+// GET /diets
 router.get("/diets", async (req, res) => {
-    try {
-        const response = await getApiRecipesAll(); //Traigo las diets de la Api
-        const dietFilter = await response.map(e => {
-            return {
-                id: e.id,
-                diets: e.diets.map(d => { return { name: d } })
-            }
-        })
-        res.status(200).send("succes");
-    } catch (error) {
-        res.send(error)
-    }
-    const dbPrecharge = [{ "id": 1, "name": "Gluten Free" },
-    { "id": 2, "name": "Low FODMAP" },
-    { "id": 3, "name": "Ketogenic" },
-    { "id": 4, "name": "Vegetarian" },
-    { "id": 5, "name": "Lacto-Vegetarian" },
-    { "id": 6, "name": "Ovo-Vegetarian" },
-    { "id": 7, "name": "Vegan" },
-    { "id": 8, "name": "Pescetarian" },
-    { "id": 9, "name": "Paleo" },
-    { "id": 10, "name": "Primal" },
-    { "id": 11, "name": "Whole30" }]
-    await Diet.bulkCreate(dbPrecharge); //precargo la db con las dietas
-})
+  try {
+    const response = await getApiRecipesAll();
+    const uniqueDiets = new Set();
+
+    response.forEach((recipe) => {
+      recipe.diets?.forEach((diet) => uniqueDiets.add(diet));
+    });
+
+    const dbPrecharge = Array.from(uniqueDiets).map((name, i) => ({
+      id: i + 1,
+      name,
+    }));
+
+    await Diet.bulkCreate(dbPrecharge, { ignoreDuplicates: true });
+    res.status(200).json({ msg: "Dietas cargadas correctamente." });
+  } catch (error) {
+    console.error("Error en /diets:", error.message);
+    res.status(500).json({ msg: "Error al cargar las dietas." });
+  }
+});
 
 module.exports = router;
