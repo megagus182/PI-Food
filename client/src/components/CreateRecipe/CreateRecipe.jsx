@@ -14,6 +14,11 @@ export default function CreateRecipe() {
     diets: [],
   });
 
+  function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+}
+
+
   const [errorForm, setErrorForm] = useState({ title: "" });
   const [errorButton, setErrorButton] = useState(true);
 
@@ -34,13 +39,22 @@ export default function CreateRecipe() {
     });
   }
 
-  async function handleSubmit(e) {
-    e.preventDefault();
-    setErrorForm(validate(recipe));
-    await axios.post("https://pi-food-j5lj.onrender.com/recipes", recipe);
-    alert("Recipe created successfully");
-    navigate("/home");
-  }
+async function handleSubmit(e) {
+  e.preventDefault();
+  const newErrors = validate(recipe);
+  setErrorForm(newErrors);
+
+  if (Object.keys(newErrors).length > 0) return;
+
+  const recipeToSend = {
+    ...recipe,
+    title: capitalizeFirstLetter(recipe.title.trim()),
+  };
+
+  await axios.post("https://pi-food-j5lj.onrender.com/recipes", recipeToSend);
+  alert("Recipe created successfully");
+  navigate("/home");
+}
 
   function validate(info) {
     const error = {};
