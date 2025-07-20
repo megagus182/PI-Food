@@ -45,7 +45,6 @@ export default function Home() {
   return (
     <div
       className="w-full mb-10 min-h-screen flex flex-col items-center justify-start bg-cover bg-center relative"
-      style={{ backgroundImage: "url('/img/home.jpg')" }}
     >
       <div className="pt-20 m-5 w-full flex flex-col items-center gap-6">
         {/* SearchBar */}
